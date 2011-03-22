@@ -27,7 +27,7 @@ describe UsersController do
     
     it "should include the user's name" do
       get :show, :id => @user
-      reponse.should have_selector("h1", :content => @user.name)
+      response.should have_selector("h1", :content => @user.name)
     end
     
     it "should have a profile image" do
@@ -82,15 +82,20 @@ describe UsersController do
                   :password => "foobar", :password_confirmation => "foobar"}
       end
       
-      it "shoudl create a user" do
+      it "should create a user" do
         lambda do
           post :create, :user => @attr
         end.should change(User, :count).by(1)
       end
       
+      it "should sign the user in" do
+        post :create, :user => @attr
+        controller.should be_signed_in
+      end
+      
       it "should redirect to the user show page" do
         post :create, :user => @attr
-        response.should redirect_to(user_path(assign(:user)))
+        response.should redirect_to(user_path(assigns(:user)))
       end
       
       it "should have a welcome message" do
